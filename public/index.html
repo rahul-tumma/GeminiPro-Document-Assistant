@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .chat-container {
+            max-width: 600px;
+            min-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .chat-header {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+        .pdf-text {
+            padding: 15px;
+            background-color: #f2f2f2;
+            border-bottom: 1px solid #ccc;
+        }
+        .chat-messages {
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 250px;
+            display: flex;
+            flex-direction: column;  
+        }
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .user-message {
+            background-color: #4CAF50;
+            color: #fff;
+            border-radius: 15px;
+            padding: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            align-self: flex-end; /* Align user messages to the right */
+        }
+        .bot-message {
+            background-color: #f2f2f2;
+            border-radius: 15px;
+            padding: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            align-self: flex-start; /* Align bot messages to the left */
+        }
+        .chat-input {
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            display: flex;
+        }
+        .chat-input input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            outline: none;
+        }
+        .chat-input button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none;
+        }
+        .main-container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+   <div class="main-container">
+
+    <div class="pdf-text" id="pdf-text">
+        <!-- PDF text will be displayed here -->
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-header">
+            Chatbot <i class="fas fa-robot"></i>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Chat messages will be displayed here -->
+            <div class="chat-message bot-message">Hi, how can I help you?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-question" placeholder="Type your question here..." required>
+            <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+   </div>
+
+    <script>
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+
+        function sendMessage() {
+            var userQuestion = document.getElementById('user-question').value;
+            if (!userQuestion.trim()) return;
+            document.getElementById('chat-messages').innerHTML += '<div class="chat-message user-message">' + userQuestion + '</div>';
+            document.getElementById('user-question').value = '';
+            fetch('/chat', {
+                method: 'POST',
+                body: JSON.stringify({ "user_question": userQuestion }), // Include user_question property
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('chat-messages').innerHTML += '<div class="chat-message bot-message">' + data.response + '</div>';
+                document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Fetch PDF text when the page loads
+        fetch('/pdf-text')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('pdf-text').innerText = data.pdf_text;
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html>

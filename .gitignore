@@ -1,0 +1,14 @@
+# Ignore Node.js dependencies
+node_modules/
+
+# Ignore Python virtual environment
+venv/
+
+# Ignore any compiled Python bytecode
+*.pyc
+
+# Ignore any environment-specific files
+.env
+
+# Ignore PDF files that are not required for testing
+*.pdf
