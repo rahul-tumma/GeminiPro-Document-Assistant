@@ -12,7 +12,8 @@ const PORT = 3000;
 app.use(express.json());
 
 // Google Generative AI Setup
-const genAI = new GoogleGenerativeAI("AIzaSyAqxVIKyLPplBCNp_QLXPF0T1gAmuh7wbk");
+const genAI = new GoogleGenerativeAI(process.env.GENAI_API_KEY); // Using process.env to access the environment variable
+
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 // PDF Text Extraction

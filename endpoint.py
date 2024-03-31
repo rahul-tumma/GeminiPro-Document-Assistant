@@ -21,8 +21,7 @@ def extract_text_from_pdf(pdf_file):
             text += reader.pages[page_num].extract_text()
     return text
 
-genai.configure(api_key="AIzaSyAqxVIKyLPplBCNp_QLXPF0T1gAmuh7wbk")
-# genai.configure(api_key="API KEY")
+genai.configure(api_key="API KEY")
 
 # Set up the model
 generation_config = {
